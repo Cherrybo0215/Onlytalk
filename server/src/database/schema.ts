@@ -1,6 +1,48 @@
 import Database from 'better-sqlite3';
 
+// 数据库迁移函数
+function migrateDatabase(db: Database.Database) {
+  try {
+    // 检查users表是否存在points列
+    const tableInfo = db.prepare("PRAGMA table_info(users)").all() as any[];
+    const columns = tableInfo.map((col: any) => col.name);
+    
+    // 添加points列（如果不存在）
+    if (!columns.includes('points')) {
+      console.log('迁移: 添加points列到users表');
+      db.exec('ALTER TABLE users ADD COLUMN points INTEGER DEFAULT 0');
+      // 为现有用户设置默认积分
+      db.exec('UPDATE users SET points = 10 WHERE points IS NULL OR points = 0');
+    }
+    
+    // 添加level列（如果不存在）
+    if (!columns.includes('level')) {
+      console.log('迁移: 添加level列到users表');
+      db.exec('ALTER TABLE users ADD COLUMN level INTEGER DEFAULT 1');
+      // 根据积分计算现有用户的等级
+      db.exec(`
+        UPDATE users 
+        SET level = CAST((points / 100) AS INTEGER) + 1 
+        WHERE level IS NULL OR level = 1
+      `);
+    }
+    
+    // 添加bio列（如果不存在）
+    if (!columns.includes('bio')) {
+      console.log('迁移: 添加bio列到users表');
+      db.exec('ALTER TABLE users ADD COLUMN bio TEXT');
+    }
+    
+    console.log('数据库迁移完成');
+  } catch (error) {
+    console.error('数据库迁移错误:', error);
+    // 迁移失败不应该阻止应用启动
+  }
+}
+
 export function initTables(db: Database.Database) {
+  // 先执行迁移
+  migrateDatabase(db);
   // 用户表
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
