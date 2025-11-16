@@ -44,6 +44,10 @@ let categoryRoutes: any;
 let likesRoutes: any;
 let favoritesRoutes: any;
 let searchRoutes: any;
+let shopRoutes: any;
+let leaderboardRoutes: any;
+let checkinRoutes: any;
+let rewardsRoutes: any;
 
 if (dbInitialized) {
   authRoutes = require('./routes/auth').default;
@@ -53,6 +57,10 @@ if (dbInitialized) {
   likesRoutes = require('./routes/likes').default;
   favoritesRoutes = require('./routes/favorites').default;
   searchRoutes = require('./routes/search').default;
+  shopRoutes = require('./routes/shop').default;
+  leaderboardRoutes = require('./routes/leaderboard').default;
+  checkinRoutes = require('./routes/checkin').default;
+  rewardsRoutes = require('./routes/rewards').default;
 }
 
 // 数据库检查中间件（排除健康检查端点）
@@ -78,6 +86,10 @@ if (dbInitialized) {
   app.use('/api/likes', likesRoutes);
   app.use('/api/favorites', favoritesRoutes);
   app.use('/api/search', searchRoutes);
+  app.use('/api/shop', shopRoutes);
+  app.use('/api/leaderboard', leaderboardRoutes);
+  app.use('/api/checkin', checkinRoutes);
+  app.use('/api/rewards', rewardsRoutes);
 } else {
   // 如果数据库未初始化，返回503错误
   app.use('/api/*', (req, res) => {
@@ -99,8 +111,12 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`服务器运行在 http://localhost:${PORT}`);
   console.log(`数据库初始化状态: ${dbInitialized ? '✅ 已初始化' : '❌ 未初始化'}`);
+  console.log(`\n📱 移动端访问地址:`);
+  console.log(`   前端: http://192.168.3.10:3000`);
+  console.log(`   后端: http://192.168.3.10:3001`);
+  console.log(`\n💡 提示: 确保手机和电脑在同一WiFi网络下`);
 });
 

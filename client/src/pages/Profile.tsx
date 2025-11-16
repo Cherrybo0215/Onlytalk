@@ -104,131 +104,169 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 animate-fade-in">
       {/* 用户信息卡片 */}
-      <div className="card p-8">
-        <div className="flex items-center space-x-6 mb-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
-            {user.username.charAt(0).toUpperCase()}
+      <div className="card p-6 sm:p-8 lg:p-10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="relative">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-xl hover:scale-110 transition-transform duration-300">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-500 border-3 sm:border-4 border-white shadow-lg"></div>
           </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{user.username}</h1>
-            <div className="flex items-center gap-4">
-              <span className={`px-3 py-1 rounded-full text-white text-sm font-medium bg-gradient-to-r ${getLevelColor(user.level)}`}>
+          <div className="flex-1 text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              {user.username}
+            </h1>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3">
+              <span className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-white text-xs sm:text-sm font-semibold bg-gradient-to-r ${getLevelColor(user.level)} shadow-lg`}>
                 Lv.{user.level} {getLevelName(user.level)}
               </span>
-              <span className="text-gray-600">⭐ {user.points} 积分</span>
+              <span className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-yellow-50 to-orange-50 text-yellow-700 font-medium border border-yellow-200">
+                ⭐ {user.points} 积分
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">{user.points}</div>
-            <div className="text-sm text-gray-600">积分</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">{user.points}</div>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">积分</div>
           </div>
-          <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">Lv.{user.level}</div>
-            <div className="text-sm text-gray-600">等级</div>
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">Lv.{user.level}</div>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">等级</div>
           </div>
-          <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{user.role === 'admin' ? '👑' : '👤'}</div>
-            <div className="text-sm text-gray-600">{user.role === 'admin' ? '管理员' : '普通用户'}</div>
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1">{user.role === 'admin' ? '👑' : '👤'}</div>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">{user.role === 'admin' ? '管理员' : '普通用户'}</div>
           </div>
-          <div className="p-4 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">{favorites.length}</div>
-            <div className="text-sm text-gray-600">收藏</div>
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+            <div className="text-2xl sm:text-3xl font-bold text-yellow-600 mb-1">{favorites.length}</div>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium">收藏</div>
           </div>
         </div>
 
-        <div className="space-y-4 pt-6 border-t border-gray-200">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-            <p className="text-gray-900">{user.email}</p>
+        <div className="space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-gray-200/50">
+          <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+              <span>📧</span>
+              <span>邮箱</span>
+            </label>
+            <p className="text-gray-900 font-medium text-sm sm:text-base">{user.email}</p>
           </div>
           {user.bio && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">个人简介</label>
-              <p className="text-gray-900">{user.bio}</p>
+            <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+              <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+                <span>📝</span>
+                <span>个人简介</span>
+              </label>
+              <p className="text-gray-900 text-sm sm:text-base">{user.bio}</p>
             </div>
           )}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">注册时间</label>
-            <p className="text-gray-900">{formatDate(user.created_at)}</p>
+          <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+            <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+              <span>📅</span>
+              <span>注册时间</span>
+            </label>
+            <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(user.created_at)}</p>
           </div>
         </div>
       </div>
 
       {/* 标签页 */}
-      <div className="card">
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-4 px-6">
+      <div className="card overflow-hidden">
+        <div className="border-b border-gray-200/50 bg-gradient-to-r from-purple-50/30 to-pink-50/30">
+          <nav className="flex space-x-1 sm:space-x-2 px-4 sm:px-6">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`py-4 px-2 border-b-2 font-medium transition-colors ${
+              className={`py-3 sm:py-4 px-4 sm:px-6 border-b-2 font-semibold transition-all duration-300 text-sm sm:text-base ${
                 activeTab === 'profile'
-                  ? 'border-purple-500 text-purple-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-purple-500 text-purple-600 bg-white/50'
+                  : 'border-transparent text-gray-500 hover:text-purple-600 hover:bg-white/30'
               }`}
             >
-              个人资料
+              👤 个人资料
             </button>
             <button
               onClick={() => setActiveTab('favorites')}
-              className={`py-4 px-2 border-b-2 font-medium transition-colors ${
+              className={`py-3 sm:py-4 px-4 sm:px-6 border-b-2 font-semibold transition-all duration-300 text-sm sm:text-base ${
                 activeTab === 'favorites'
-                  ? 'border-purple-500 text-purple-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-purple-500 text-purple-600 bg-white/50'
+                  : 'border-transparent text-gray-500 hover:text-purple-600 hover:bg-white/30'
               }`}
             >
-              我的收藏 ({favorites.length})
+              ⭐ 我的收藏 ({favorites.length})
             </button>
           </nav>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6 lg:p-8">
           {activeTab === 'favorites' ? (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {favorites.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p className="text-lg mb-2">还没有收藏任何帖子</p>
-                  <Link to="/" className="text-purple-600 hover:underline">
-                    去逛逛 →
+                <div className="text-center py-8 sm:py-12">
+                  <div className="text-5xl sm:text-6xl mb-4">⭐</div>
+                  <p className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">还没有收藏任何帖子</p>
+                  <Link to="/" className="text-purple-600 hover:text-purple-700 font-medium hover:underline inline-flex items-center gap-2">
+                    去逛逛 <span>→</span>
                   </Link>
                 </div>
               ) : (
-                favorites.map((favorite) => (
+                favorites.map((favorite, index) => (
                   <Link
                     key={favorite.id}
                     to={`/post/${favorite.id}`}
-                    className="block p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-200"
+                    className="block p-4 sm:p-5 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 border border-gray-200/50 hover:border-purple-200 hover:shadow-md group animate-slide-up"
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <h3 className="font-semibold text-gray-900 mb-2">{favorite.title}</h3>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>作者: {favorite.author_name}</span>
-                      <span>收藏于: {formatDate(favorite.favorited_at)}</span>
+                    <h3 className="font-semibold text-gray-900 mb-2 sm:mb-3 group-hover:text-purple-600 transition-colors line-clamp-2 text-sm sm:text-base">
+                      {favorite.title}
+                    </h3>
+                    <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-wrap">
+                      <span className="flex items-center gap-1.5">
+                        <span>👤</span>
+                        <span>{favorite.author_name}</span>
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span>⭐</span>
+                        <span>收藏于: {formatDate(favorite.favorited_at)}</span>
+                      </span>
                     </div>
                   </Link>
                 ))
               )}
             </div>
           ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-                <p className="text-gray-900">{user.username}</p>
+            <div className="space-y-3 sm:space-y-4">
+              <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+                  <span>👤</span>
+                  <span>用户名</span>
+                </label>
+                <p className="text-gray-900 font-medium text-sm sm:text-base">{user.username}</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
-                <p className="text-gray-900">{user.email}</p>
+              <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+                  <span>📧</span>
+                  <span>邮箱</span>
+                </label>
+                <p className="text-gray-900 font-medium text-sm sm:text-base">{user.email}</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">角色</label>
-                <p className="text-gray-900">{user.role === 'admin' ? '管理员' : '普通用户'}</p>
+              <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+                  <span>{user.role === 'admin' ? '👑' : '👤'}</span>
+                  <span>角色</span>
+                </label>
+                <p className="text-gray-900 font-medium text-sm sm:text-base">{user.role === 'admin' ? '管理员' : '普通用户'}</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">注册时间</label>
-                <p className="text-gray-900">{formatDate(user.created_at)}</p>
+              <div className="p-3 sm:p-4 bg-gray-50/50 rounded-xl">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 flex items-center gap-2">
+                  <span>📅</span>
+                  <span>注册时间</span>
+                </label>
+                <p className="text-gray-900 font-medium text-sm sm:text-base">{formatDate(user.created_at)}</p>
               </div>
             </div>
           )}

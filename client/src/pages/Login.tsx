@@ -9,7 +9,6 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,22 +27,23 @@ export default function Login() {
 
   return (
     <div className="max-w-md mx-auto animate-fade-in">
-      <div className="card p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            👋 欢迎回来
+      <div className="card p-6 sm:p-8 lg:p-10">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 flex items-center justify-center shadow-xl">
+            <span className="text-3xl">👋</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+            欢迎回来
           </h1>
           <p className="text-gray-600">登录到 OnlyTalk</p>
         </div>
-
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center gap-2 animate-slide-up">
+          <div className="mb-4 sm:mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2 animate-slide-up">
             <span className="text-xl">⚠️</span>
             <span>{error}</span>
           </div>
         )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               👤 用户名或邮箱
@@ -55,42 +55,31 @@ export default function Login() {
                 setUsername(e.target.value);
                 setError('');
               }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
               placeholder="输入用户名或邮箱"
               required
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               🔒 密码
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError('');
-                }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all pr-12"
-                placeholder="输入密码"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </button>
-            </div>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError('');
+              }}
+              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
+              placeholder="输入密码"
+              required
+            />
           </div>
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed py-3"
+            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -98,20 +87,18 @@ export default function Login() {
                 登录中...
               </span>
             ) : (
-              '🚀 登录'
+              '登录'
             )}
           </button>
         </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            还没有账号？{' '}
-            <Link to="/register" className="text-purple-600 hover:text-purple-700 font-medium hover:underline">
-              立即注册 →
-            </Link>
-          </p>
+        <div className="mt-6 text-center text-sm text-gray-600">
+          还没有账号？{' '}
+          <Link to="/register" className="text-purple-600 hover:text-purple-700 font-semibold hover:underline">
+            立即注册
+          </Link>
         </div>
       </div>
     </div>
   );
 }
+

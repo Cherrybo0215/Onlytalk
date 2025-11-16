@@ -36,15 +36,15 @@
 
 @layer components {
   .card {
-    @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply bg-white/95 backdrop-blur-md rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20;
   }
 
   .btn-primary {
-    @apply px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 active:scale-95;
+    @apply px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95;
   }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-white/80 backdrop-blur-sm text-gray-700 rounded-lg hover:bg-white transition-all duration-300 border border-gray-200;
+    @apply px-4 sm:px-6 py-2 sm:py-3 bg-white/90 backdrop-blur-sm text-gray-700 rounded-xl font-medium hover:bg-white transition-all duration-300 border border-gray-200/50 shadow-md hover:shadow-lg hover:scale-105 active:scale-95;
   }
 
   .animate-fade-in {
@@ -76,60 +76,14 @@
   }
 }
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
+  to {
     opacity: 1;
+    transform: scale(1);
   }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.animate-bounce-slow {
-  animation: bounce 2s infinite;
-}
-
-.animate-pulse-slow {
-  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-}
-
-/* 选择文本样式 */
-::selection {
-  background: rgba(139, 92, 246, 0.3);
-  color: inherit;
-}
-
-::-moz-selection {
-  background: rgba(139, 92, 246, 0.3);
-  color: inherit;
 }
 
