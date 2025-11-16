@@ -26,39 +26,42 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
               <span className="ml-2 text-sm text-gray-500">畅所欲言</span>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {user ? (
                 <>
                   <Link
                     to="/create"
-                    className="btn-primary"
+                    className="btn-primary text-sm sm:text-base"
                   >
-                    ✨ 发帖
+                    <span className="hidden sm:inline">✨ 发帖</span>
+                    <span className="sm:hidden">✨</span>
                   </Link>
                   <Link
                     to="/profile"
-                    className="px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium"
+                    className="px-3 sm:px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium text-sm sm:text-base"
                   >
-                    👤 {user.username}
+                    <span className="hidden sm:inline">👤 {user.username}</span>
+                    <span className="sm:hidden">👤</span>
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="px-4 py-2 text-gray-600 hover:text-red-600 transition-colors"
+                    className="px-3 sm:px-4 py-2 text-gray-600 hover:text-red-600 transition-colors text-sm sm:text-base"
                   >
-                    退出
+                    <span className="hidden sm:inline">退出</span>
+                    <span className="sm:hidden">🚪</span>
                   </button>
                 </>
               ) : (
                 <>
                   <Link
                     to="/login"
-                    className="px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium"
+                    className="px-3 sm:px-4 py-2 text-gray-700 hover:text-purple-600 transition-colors font-medium text-sm sm:text-base"
                   >
                     登录
                   </Link>
                   <Link
                     to="/register"
-                    className="btn-primary"
+                    className="btn-primary text-sm sm:text-base"
                   >
                     注册
                   </Link>

@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import EmojiPicker from '../components/EmojiPicker';
 
 interface Post {
   id: number;
@@ -40,6 +41,7 @@ export default function PostDetail() {
   const [submitting, setSubmitting] = useState(false);
   const [liking, setLiking] = useState(false);
   const [favoriting, setFavoriting] = useState(false);
+  const commentRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     fetchPost();
@@ -135,6 +137,24 @@ export default function PostDetail() {
     }
   };
 
+  const handleEmojiSelect = (emoji: string) => {
+    if (commentRef.current) {
+      const textarea = commentRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newContent = commentContent.substring(0, start) + emoji + commentContent.substring(end);
+      setCommentContent(newContent);
+      
+      // 恢复光标位置
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+      }, 0);
+    } else {
+      setCommentContent(commentContent + emoji);
+    }
+  };
+
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -151,7 +171,7 @@ export default function PostDetail() {
     try {
       await axios.post('/api/comments', {
         post_id: parseInt(id!),
-        content: commentContent,
+        content: commentContent.trim(),
       });
       setCommentContent('');
       fetchComments();
@@ -206,8 +226,8 @@ export default function PostDetail() {
             {post.category_name || '未分类'}
           </span>
         </div>
-        <h1 className="text-4xl font-bold mb-6 text-gray-900">{post.title}</h1>
-        <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-gray-900">{post.title}</h1>
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
           <span className="flex items-center gap-1">
             👤 {post.author_name}
           </span>
@@ -228,26 +248,26 @@ export default function PostDetail() {
           <button
             onClick={handleLike}
             disabled={liking || !user}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all transform hover:scale-105 active:scale-95 ${
               post.is_liked
-                ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                ? 'bg-gradient-to-r from-red-100 to-pink-100 text-red-600 hover:from-red-200 hover:to-pink-200 shadow-md'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             } ${!user ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <span className="text-lg">{post.is_liked ? '❤️' : '🤍'}</span>
-            <span>{post.likes}</span>
+            <span className="text-xl transition-transform hover:scale-125">{post.is_liked ? '❤️' : '🤍'}</span>
+            <span className="font-medium">{post.likes}</span>
           </button>
           <button
             onClick={handleFavorite}
             disabled={favoriting || !user}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all transform hover:scale-105 active:scale-95 ${
               post.is_favorited
-                ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
+                ? 'bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-600 hover:from-yellow-200 hover:to-orange-200 shadow-md'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             } ${!user ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <span className="text-lg">{post.is_favorited ? '⭐' : '☆'}</span>
-            <span>收藏</span>
+            <span className="text-xl transition-transform hover:scale-125">{post.is_favorited ? '⭐' : '☆'}</span>
+            <span className="font-medium">收藏</span>
           </button>
         </div>
       </div>
@@ -260,20 +280,38 @@ export default function PostDetail() {
 
         {user ? (
           <form onSubmit={handleSubmitComment} className="mb-6">
-            <textarea
-              value={commentContent}
-              onChange={(e) => setCommentContent(e.target.value)}
-              placeholder="写下你的评论..."
-              className="w-full p-4 border border-gray-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-              rows={4}
-            />
-            <button
-              type="submit"
-              disabled={submitting}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {submitting ? '提交中...' : '发表评论'}
-            </button>
+            <div className="relative mb-3">
+              <textarea
+                ref={commentRef}
+                value={commentContent}
+                onChange={(e) => setCommentContent(e.target.value)}
+                placeholder="写下你的评论... 💬"
+                className="w-full p-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none transition-all"
+                rows={4}
+              />
+              <div className="absolute bottom-3 right-3">
+                <EmojiPicker onEmojiSelect={handleEmojiSelect} />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-500">
+                {commentContent.length > 0 && `${commentContent.length} 字符`}
+              </span>
+              <button
+                type="submit"
+                disabled={submitting || !commentContent.trim()}
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                    提交中...
+                  </span>
+                ) : (
+                  '💬 发表评论'
+                )}
+              </button>
+            </div>
           </form>
         ) : (
           <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg text-center border border-purple-200">
@@ -312,12 +350,14 @@ export default function PostDetail() {
                       <button
                         onClick={() => handleCommentLike(comment.id)}
                         disabled={!user}
-                        className={`flex items-center gap-1 text-sm ${
-                          comment.is_liked ? 'text-red-500' : 'text-gray-500'
-                        } hover:text-red-500 transition-colors ${!user ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all transform hover:scale-105 ${
+                          comment.is_liked 
+                            ? 'bg-red-50 text-red-500 hover:bg-red-100' 
+                            : 'text-gray-500 hover:bg-gray-100'
+                        } ${!user ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
-                        <span>{comment.is_liked ? '❤️' : '🤍'}</span>
-                        <span>{comment.likes}</span>
+                        <span className="text-base">{comment.is_liked ? '❤️' : '🤍'}</span>
+                        <span className="font-medium">{comment.likes}</span>
                       </button>
                     </div>
                   </div>

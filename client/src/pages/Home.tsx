@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { PostSkeleton } from '../components/LoadingSkeleton';
 
 interface Category {
   id: number;
@@ -121,7 +122,7 @@ export default function Home() {
     <div className="space-y-6 animate-fade-in">
       {/* 搜索栏 */}
       <div className="card p-4">
-        <form onSubmit={handleSearch} className="flex gap-2">
+        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={searchQuery}
@@ -129,37 +130,41 @@ export default function Home() {
             placeholder="搜索帖子..."
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
-          <button type="submit" className="btn-primary">
-            🔍 搜索
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setSearchQuery('');
-              setShowHot(true);
-              setSelectedCategory(null);
-            }}
-            className="btn-secondary"
-          >
-            🔥 热门
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setSearchQuery('');
-              setShowHot(false);
-              setPage(1);
-            }}
-            className="btn-secondary"
-          >
-            📋 最新
-          </button>
+          <div className="flex gap-2">
+            <button type="submit" className="btn-primary flex-1 sm:flex-none">
+              🔍 搜索
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setShowHot(true);
+                setSelectedCategory(null);
+              }}
+              className="btn-secondary"
+            >
+              <span className="hidden sm:inline">🔥 热门</span>
+              <span className="sm:hidden">🔥</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setShowHot(false);
+                setPage(1);
+              }}
+              className="btn-secondary"
+            >
+              <span className="hidden sm:inline">📋 最新</span>
+              <span className="sm:hidden">📋</span>
+            </button>
+          </div>
         </form>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6">
         {/* 侧边栏 */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 space-y-4 order-2 lg:order-1">
           {/* 分类 */}
           <div className="card p-4">
             <h2 className="text-lg font-semibold mb-4 text-gray-800">📂 分类</h2>
@@ -228,7 +233,7 @@ export default function Home() {
         </div>
 
         {/* 主内容区 */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 order-1 lg:order-2">
           <div className="card">
             <div className="p-4 border-b border-gray-200">
               <h1 className="text-2xl font-bold text-gray-800">
@@ -236,9 +241,10 @@ export default function Home() {
               </h1>
             </div>
             {loading ? (
-              <div className="p-8 text-center text-gray-500">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-                <p className="mt-2">加载中...</p>
+              <div className="space-y-4 p-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <PostSkeleton key={i} />
+                ))}
               </div>
             ) : (showHot ? hotPosts : posts).length === 0 ? (
               <div className="p-8 text-center text-gray-500">
