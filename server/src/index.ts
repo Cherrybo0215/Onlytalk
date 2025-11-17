@@ -23,7 +23,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // 静态文件服务
 import path from 'path';
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+const uploadsPath = path.join(__dirname, '../uploads');
+console.log('📁 上传文件目录:', uploadsPath);
+app.use('/uploads', express.static(uploadsPath));
 
 // 初始化数据库
 let dbInitialized = false;

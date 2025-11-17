@@ -28,12 +28,6 @@ export default function FileUpload({ onUploadComplete, maxFiles = 5, accept, mul
     if (!files || files.length === 0) return;
 
     const filesArray = Array.from(files).slice(0, maxFiles);
-    
-    // 创建预览URL
-    const previews = filesArray
-      .filter(file => file.type.startsWith('image/'))
-      .map(file => URL.createObjectURL(file));
-    setPreviewUrls(previews);
 
     setUploading(true);
     const formData = new FormData();
@@ -51,8 +45,12 @@ export default function FileUpload({ onUploadComplete, maxFiles = 5, accept, mul
       });
 
       const newFiles = response.data.files;
+      console.log('上传成功，文件信息:', newFiles);
       setUploadedFiles(prev => [...prev, ...newFiles]);
       onUploadComplete([...uploadedFiles, ...newFiles]);
+      
+      // 清除预览URL（使用服务器返回的URL）
+      setPreviewUrls([]);
     } catch (error: any) {
       console.error('文件上传失败:', error);
       alert(error.response?.data?.error || '文件上传失败');
@@ -127,11 +125,15 @@ export default function FileUpload({ onUploadComplete, maxFiles = 5, accept, mul
           {uploadedFiles.map((file, index) => (
             <div key={index} className="relative group">
               {file.type === 'image' ? (
-                <div className="relative aspect-square rounded-lg overflow-hidden border border-gray-200">
+                <div className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700/50">
                   <img
                     src={file.url}
                     alt={file.originalname}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error('图片加载失败:', file.url);
+                      (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="14" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3E图片加载失败%3C/text%3E%3C/svg%3E';
+                    }}
                   />
                   <button
                     onClick={() => removeFile(index)}
