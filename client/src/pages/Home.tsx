@@ -132,7 +132,7 @@ export default function Home() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索帖子、内容..."
-              className="w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all bg-white/50 backdrop-blur-sm"
+              className="w-full px-4 py-2.5 sm:py-3 pl-10 sm:pl-12 border border-gray-300 dark:border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
             <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
               🔍
@@ -176,7 +176,7 @@ export default function Home() {
         <div className="lg:col-span-1 space-y-4 order-2 lg:order-1">
           {/* 分类 */}
           <div className="card p-4 sm:p-5">
-            <h2 className="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
+            <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100 flex items-center gap-2">
               <span className="text-2xl">📂</span>
               <span>分类</span>
             </h2>
@@ -191,7 +191,7 @@ export default function Home() {
                   className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                     selectedCategory === null && !showHot
                       ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105'
-                      : 'hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 text-gray-700 hover:scale-105'
+                      : 'hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 text-gray-700 dark:text-gray-300 hover:scale-105'
                   }`}
                 >
                   <span className="flex items-center justify-between">
@@ -211,13 +211,10 @@ export default function Home() {
                     className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                       selectedCategory === category.id
                         ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105'
-                        : 'hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 text-gray-700 hover:scale-105'
+                        : 'hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 text-gray-700 dark:text-gray-300 hover:scale-105'
                     }`}
                   >
-                    <span className="flex items-center justify-between">
-                      <span>{category.name}</span>
-                      <span className="text-xs opacity-75">({category.post_count})</span>
-                    </span>
+                    <span>{category.name}</span>
                   </button>
                 </li>
               ))}
@@ -227,7 +224,7 @@ export default function Home() {
           {/* 热门帖子 */}
           {hotPosts.length > 0 && (
             <div className="card p-4 sm:p-5">
-              <h2 className="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
+              <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <span className="text-2xl animate-pulse">🔥</span>
                 <span>热门</span>
               </h2>
@@ -236,17 +233,17 @@ export default function Home() {
                   <li key={post.id}>
                     <Link
                       to={`/post/${post.id}`}
-                      className="block p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group border border-transparent hover:border-purple-200"
+                      className="block p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 transition-all duration-300 group border border-transparent hover:border-purple-200 dark:hover:border-purple-500/30"
                     >
                       <div className="flex items-start gap-2">
                         <span className="text-lg font-bold text-purple-500 opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0">
                           {index + 1}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-medium text-gray-800 line-clamp-2 mb-2 group-hover:text-purple-600 transition-colors">
+                          <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 line-clamp-2 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                             {post.title}
                           </h4>
-                          <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                             <span className="flex items-center gap-1">❤️ {post.likes}</span>
                             <span className="flex items-center gap-1">💬 {post.comment_count}</span>
                           </div>
@@ -263,8 +260,8 @@ export default function Home() {
         {/* 主内容区 */}
         <div className="lg:col-span-3 order-1 lg:order-2">
           <div className="card overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-gray-200/50 bg-gradient-to-r from-purple-50/50 to-pink-50/50">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2 flex-wrap">
+            <div className="p-4 sm:p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-purple-50/50 to-pink-50/50 dark:from-purple-900/20 dark:to-pink-900/20">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2 flex-wrap">
                 {showHot ? (
                   <>
                     <span className="text-2xl sm:text-3xl animate-pulse">🔥</span>
@@ -286,13 +283,13 @@ export default function Home() {
             {loading ? (
               <div className="p-8 sm:p-12 text-center">
                 <div className="inline-block animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-4 border-purple-200 border-t-purple-600"></div>
-                <p className="mt-4 text-gray-500 text-lg">加载中...</p>
+                <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">加载中...</p>
               </div>
             ) : (showHot ? hotPosts : posts).length === 0 ? (
               <div className="p-8 sm:p-12 text-center">
                 <div className="text-5xl sm:text-6xl mb-4">📭</div>
-                <p className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">暂无帖子</p>
-                <p className="text-gray-500">快来发布第一个帖子吧！</p>
+                <p className="text-lg sm:text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">暂无帖子</p>
+                <p className="text-gray-500 dark:text-gray-400">快来发布第一个帖子吧！</p>
               </div>
             ) : (
               <>
@@ -316,13 +313,13 @@ export default function Home() {
                               {post.category_name || '未分类'}
                             </span>
                           </div>
-                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-purple-600 transition-colors line-clamp-2">
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">
                             {post.title}
                           </h3>
-                          <p className="text-gray-600 text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
+                          <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
                             {post.content}
                           </p>
-                          <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-wrap">
+                          <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 flex-wrap">
                             <span className="flex items-center gap-1.5 hover:text-purple-600 transition-colors">
                               <span className="text-base">👤</span>
                               <span className="font-medium">{post.author_name}</span>
@@ -364,8 +361,8 @@ export default function Home() {
                       </button>
                       <div className="px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-white border border-gray-200 shadow-sm font-medium text-sm sm:text-base">
                         <span className="text-purple-600">{page}</span>
-                        <span className="text-gray-400 mx-2">/</span>
-                        <span className="text-gray-600">{totalPages}</span>
+                        <span className="text-gray-400 dark:text-gray-500 mx-2">/</span>
+                        <span className="text-gray-600 dark:text-gray-300">{totalPages}</span>
                       </div>
                       <button
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}

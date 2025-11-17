@@ -53,20 +53,20 @@ export default function Register() {
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 flex items-center justify-center shadow-xl">
             <span className="text-3xl">🎉</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 dark:from-purple-300 dark:via-pink-300 dark:to-blue-300 bg-clip-text text-transparent dark:drop-shadow-lg">
             加入 OnlyTalk
           </h1>
-          <p className="text-gray-600">创建账号，开始畅所欲言</p>
+          <p className="text-gray-600 dark:text-gray-300">创建账号，开始畅所欲言</p>
         </div>
         {error && (
-          <div className="mb-4 sm:mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2 animate-slide-up">
+          <div className="mb-4 sm:mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-300 rounded-xl flex items-center gap-2 animate-slide-up">
             <span className="text-xl">⚠️</span>
             <span>{error}</span>
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               👤 用户名
             </label>
             <input
@@ -76,16 +76,16 @@ export default function Register() {
                 setUsername(e.target.value);
                 setError('');
               }}
-              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
+              className="w-full px-4 py-3 border border-gray-300/50 dark:border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="3-20个字符，支持中文"
               required
               minLength={3}
               maxLength={20}
             />
-            <p className="text-xs text-gray-500 mt-1">3-20个字符</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">3-20个字符</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               📧 邮箱
             </label>
             <input
@@ -95,13 +95,13 @@ export default function Register() {
                 setEmail(e.target.value);
                 setError('');
               }}
-              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
+              className="w-full px-4 py-3 border border-gray-300/50 dark:border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="your@email.com"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               🔒 密码
             </label>
             <input
@@ -111,15 +111,15 @@ export default function Register() {
                 setPassword(e.target.value);
                 setError('');
               }}
-              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
+              className="w-full px-4 py-3 border border-gray-300/50 dark:border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="至少6个字符，建议8位以上"
               required
               minLength={6}
             />
-            <p className="text-xs text-gray-500 mt-1">至少6个字符</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">至少6个字符</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               🔒 确认密码
             </label>
             <input
@@ -129,16 +129,16 @@ export default function Register() {
                 setConfirmPassword(e.target.value);
                 setError('');
               }}
-              className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all bg-white/50 backdrop-blur-sm ${
+              className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 ${
                 confirmPassword && password === confirmPassword
-                  ? 'border-green-500 focus:ring-green-500'
-                  : 'border-gray-300/50 focus:ring-purple-500/50 focus:border-purple-500'
+                  ? 'border-green-500 dark:border-green-400 focus:ring-green-500 dark:focus:ring-green-400'
+                  : 'border-gray-300/50 dark:border-purple-500/30 focus:ring-purple-500/50 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400'
               }`}
               placeholder="再次输入密码"
               required
             />
             {confirmPassword && password === confirmPassword && (
-              <p className="text-xs text-green-600 mt-1">✓ 密码匹配</p>
+              <p className="text-xs text-green-600 dark:text-green-400 mt-1">✓ 密码匹配</p>
             )}
           </div>
           <button
@@ -156,9 +156,9 @@ export default function Register() {
             )}
           </button>
         </form>
-        <div className="mt-6 text-center text-sm text-gray-600">
+        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
           已有账号？{' '}
-          <Link to="/login" className="text-purple-600 hover:text-purple-700 font-semibold hover:underline">
+          <Link to="/login" className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold hover:underline">
             立即登录
           </Link>
         </div>

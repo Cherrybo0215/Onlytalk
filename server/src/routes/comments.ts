@@ -126,6 +126,11 @@ router.post(
 
       // 评论奖励积分
       db.prepare('UPDATE users SET points = points + 2 WHERE id = ?').run(req.userId);
+      
+      // 更新用户等级
+      const user = db.prepare('SELECT points FROM users WHERE id = ?').get(req.userId) as any;
+      const newLevel = Math.floor(user.points / 30) + 1;
+      db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, req.userId);
 
       // 如果回复别人的评论，给被回复者发送通知
       if (parent_id) {

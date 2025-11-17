@@ -21,6 +21,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 静态文件服务
+import path from 'path';
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // 初始化数据库
 let dbInitialized = false;
 try {
@@ -48,6 +52,8 @@ let shopRoutes: any;
 let leaderboardRoutes: any;
 let checkinRoutes: any;
 let rewardsRoutes: any;
+let followsRoutes: any;
+let uploadRoutes: any;
 
 if (dbInitialized) {
   authRoutes = require('./routes/auth').default;
@@ -61,6 +67,8 @@ if (dbInitialized) {
   leaderboardRoutes = require('./routes/leaderboard').default;
   checkinRoutes = require('./routes/checkin').default;
   rewardsRoutes = require('./routes/rewards').default;
+  followsRoutes = require('./routes/follows').default;
+  uploadRoutes = require('./routes/upload').default;
 }
 
 // 数据库检查中间件（排除健康检查端点）
@@ -90,6 +98,8 @@ if (dbInitialized) {
   app.use('/api/leaderboard', leaderboardRoutes);
   app.use('/api/checkin', checkinRoutes);
   app.use('/api/rewards', rewardsRoutes);
+  app.use('/api/follows', followsRoutes);
+  app.use('/api/upload', uploadRoutes);
 } else {
   // 如果数据库未初始化，返回503错误
   app.use('/api/*', (req, res) => {

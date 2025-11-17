@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import EmojiPicker from '../components/EmojiPicker';
@@ -10,14 +10,26 @@ interface Category {
   name: string;
 }
 
-export default function CreatePost() {
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  category_id: number | null;
+  attachments?: string;
+  author_id: number;
+}
+
+export default function EditPost() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [attachments, setAttachments] = useState<UploadedFile[]>([]);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -27,7 +39,8 @@ export default function CreatePost() {
       return;
     }
     fetchCategories();
-  }, [user, navigate]);
+    fetchPost();
+  }, [user, navigate, id]);
 
   const fetchCategories = async () => {
     try {
@@ -35,6 +48,43 @@ export default function CreatePost() {
       setCategories(response.data);
     } catch (error) {
       console.error('获取分类失败:', error);
+    }
+  };
+
+  const fetchPost = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`/api/posts/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const postData = response.data;
+      setPost(postData);
+      setTitle(postData.title);
+      setContent(postData.content);
+      setCategoryId(postData.category_id);
+      
+      // 检查权限
+      if (user && user.id !== postData.author_id && user.role !== 'admin') {
+        alert('无权编辑此帖子');
+        navigate(`/post/${id}`);
+        return;
+      }
+
+      // 加载附件
+      if (postData.attachments) {
+        try {
+          const parsedAttachments = JSON.parse(postData.attachments);
+          setAttachments(parsedAttachments);
+        } catch (e) {
+          console.error('解析附件失败:', e);
+        }
+      }
+    } catch (error: any) {
+      console.error('获取帖子失败:', error);
+      alert(error.response?.data?.error || '获取帖子失败');
+      navigate('/');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,38 +103,63 @@ export default function CreatePost() {
 
     setSubmitting(true);
     try {
-      const response = await axios.post('/api/posts', {
-        title,
-        content,
-        category_id: categoryId,
-        attachments: attachments.length > 0 ? JSON.stringify(attachments) : null,
-      });
-      navigate(`/post/${response.data.id}`);
+      const token = localStorage.getItem('token');
+      await axios.put(
+        `/api/posts/${id}`,
+        {
+          title,
+          content,
+          category_id: categoryId,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert('帖子更新成功');
+      navigate(`/post/${id}`);
     } catch (error: any) {
-      alert(error.response?.data?.error || '发布失败');
+      console.error('更新帖子失败:', error);
+      alert(error.response?.data?.error || '更新帖子失败');
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto animate-fade-in">
+        <div className="card p-6 sm:p-8 lg:p-10">
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
+            <p className="mt-4 text-gray-500 dark:text-gray-400 text-lg">加载中...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return null;
+  }
 
   return (
     <div className="max-w-4xl mx-auto animate-fade-in">
       <div className="card p-6 sm:p-8 lg:p-10">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 dark:from-purple-300 dark:via-pink-300 dark:to-blue-300 bg-clip-text text-transparent dark:drop-shadow-lg">
-            ✨ 发布新帖
+            ✏️ 编辑帖子
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">分享你的想法，与大家交流</p>
+          <p className="text-gray-600 dark:text-gray-300">修改你的帖子内容</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               📂 分类
             </label>
             <select
               value={categoryId || ''}
               onChange={(e) => setCategoryId(e.target.value ? parseInt(e.target.value) : null)}
-              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
+              className="w-full px-4 py-3 border border-gray-300/50 dark:border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100"
             >
               <option value="">选择分类（可选）</option>
               {categories.map((category) => (
@@ -103,7 +178,7 @@ export default function CreatePost() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all bg-white/50 backdrop-blur-sm"
+              className="w-full px-4 py-3 border border-gray-300/50 dark:border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 transition-all bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="输入一个吸引人的标题..."
               maxLength={200}
             />
@@ -140,38 +215,27 @@ export default function CreatePost() {
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{content.length} 字符</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              📎 附件（可选）
-            </label>
-            <FileUpload
-              onUploadComplete={(files) => setAttachments(files)}
-              maxFiles={5}
-              multiple={true}
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-200/50">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 rounded-xl hover:bg-gray-50 hover:shadow-md transition-all duration-300 font-medium"
-            >
-              取消
-            </button>
+          <div className="flex gap-3 sm:gap-4 pt-4">
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none"
             >
               {submitting ? (
-                <span className="flex items-center gap-2">
-                  <span className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                  发布中...
+                <span className="flex items-center justify-center gap-2">
+                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-white"></span>
+                  更新中...
                 </span>
               ) : (
-                '✨ 发布'
+                '💾 保存修改'
               )}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(`/post/${id}`)}
+              className="btn-secondary"
+            >
+              取消
             </button>
           </div>
         </form>

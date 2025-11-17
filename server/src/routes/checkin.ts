@@ -75,7 +75,7 @@ router.post('/', authenticateToken, (req: AuthRequest, res) => {
 
     // 更新用户等级
     const user = db.prepare('SELECT points FROM users WHERE id = ?').get(userId) as any;
-    const newLevel = Math.floor(user.points / 100) + 1;
+    const newLevel = Math.floor(user.points / 30) + 1;
     db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, userId);
 
     res.json({
@@ -144,4 +144,6 @@ router.get('/status', authenticateToken, (req: AuthRequest, res) => {
 });
 
 export default router;
+
+
 

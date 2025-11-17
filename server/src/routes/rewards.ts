@@ -97,7 +97,7 @@ router.post(
 
       // 更新被打赏者的等级
       const toUser = db.prepare('SELECT points FROM users WHERE id = ?').get(toUserId) as any;
-      const newLevel = Math.floor(toUser.points / 100) + 1;
+      const newLevel = Math.floor(toUser.points / 30) + 1;
       db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, toUserId);
 
       res.json({
@@ -118,4 +118,6 @@ router.post(
 );
 
 export default router;
+
+
 

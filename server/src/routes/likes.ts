@@ -31,6 +31,11 @@ router.post('/posts/:postId', authenticateToken, (req: AuthRequest, res) => {
       // 减少作者积分（如果点赞的是别人的帖子）
       if (post.author_id !== req.userId) {
         db.prepare('UPDATE users SET points = points - 1 WHERE id = ?').run(post.author_id);
+        
+        // 更新作者等级
+        const author = db.prepare('SELECT points FROM users WHERE id = ?').get(post.author_id) as any;
+        const newLevel = Math.floor(author.points / 30) + 1;
+        db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, post.author_id);
       }
 
       res.json({ liked: false, message: '已取消点赞' });
@@ -42,6 +47,11 @@ router.post('/posts/:postId', authenticateToken, (req: AuthRequest, res) => {
       // 增加作者积分（如果点赞的是别人的帖子）
       if (post.author_id !== req.userId) {
         db.prepare('UPDATE users SET points = points + 1 WHERE id = ?').run(post.author_id);
+        
+        // 更新作者等级
+        const author = db.prepare('SELECT points FROM users WHERE id = ?').get(post.author_id) as any;
+        const newLevel = Math.floor(author.points / 30) + 1;
+        db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, post.author_id);
         
         // 创建通知
         const currentUser = db.prepare('SELECT username FROM users WHERE id = ?').get(req.userId) as any;
@@ -97,6 +107,11 @@ router.post('/comments/:commentId', authenticateToken, (req: AuthRequest, res) =
       // 增加作者积分（如果点赞的是别人的评论）
       if (comment.author_id !== req.userId) {
         db.prepare('UPDATE users SET points = points + 1 WHERE id = ?').run(comment.author_id);
+        
+        // 更新作者等级
+        const author = db.prepare('SELECT points FROM users WHERE id = ?').get(comment.author_id) as any;
+        const newLevel = Math.floor(author.points / 30) + 1;
+        db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, comment.author_id);
       }
 
       res.json({ liked: true, message: '点赞成功' });

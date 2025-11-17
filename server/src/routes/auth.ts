@@ -153,8 +153,8 @@ router.get('/me', authenticateToken, (req: AuthRequest, res) => {
       return res.status(404).json({ error: '用户不存在' });
     }
     
-    // 计算等级（每100积分升1级）
-    const calculatedLevel = Math.floor((user.points || 0) / 100) + 1;
+    // 计算等级（每30积分升1级）
+    const calculatedLevel = Math.floor((user.points || 0) / 30) + 1;
     if (calculatedLevel !== user.level) {
       db.prepare('UPDATE users SET level = ? WHERE id = ?').run(calculatedLevel, req.userId);
       user.level = calculatedLevel;

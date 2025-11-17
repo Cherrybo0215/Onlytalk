@@ -19,10 +19,10 @@ function migrateDatabase(db: Database.Database) {
     if (!columns.includes('level')) {
       console.log('迁移: 添加level列到users表');
       db.exec('ALTER TABLE users ADD COLUMN level INTEGER DEFAULT 1');
-      // 根据积分计算现有用户的等级
+      // 根据积分计算现有用户的等级（每30积分升1级）
       db.exec(`
         UPDATE users 
-        SET level = CAST((points / 100) AS INTEGER) + 1 
+        SET level = CAST((points / 30) AS INTEGER) + 1 
         WHERE level IS NULL OR level = 1
       `);
     }
@@ -31,6 +31,22 @@ function migrateDatabase(db: Database.Database) {
     if (!columns.includes('bio')) {
       console.log('迁移: 添加bio列到users表');
       db.exec('ALTER TABLE users ADD COLUMN bio TEXT');
+    }
+    
+    // 检查posts表是否有attachments列
+    const postsTableInfo = db.prepare("PRAGMA table_info(posts)").all() as any[];
+    const postsColumns = postsTableInfo.map((col: any) => col.name);
+    if (!postsColumns.includes('attachments')) {
+      console.log('迁移: 添加attachments列到posts表');
+      db.exec('ALTER TABLE posts ADD COLUMN attachments TEXT');
+    }
+    
+    // 检查comments表是否有attachments列
+    const commentsTableInfo = db.prepare("PRAGMA table_info(comments)").all() as any[];
+    const commentsColumns = commentsTableInfo.map((col: any) => col.name);
+    if (!commentsColumns.includes('attachments')) {
+      console.log('迁移: 添加attachments列到comments表');
+      db.exec('ALTER TABLE comments ADD COLUMN attachments TEXT');
     }
     
     console.log('数据库迁移完成');
@@ -82,6 +98,7 @@ export function initTables(db: Database.Database) {
       likes INTEGER DEFAULT 0,
       is_pinned INTEGER DEFAULT 0,
       is_locked INTEGER DEFAULT 0,
+      attachments TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -98,6 +115,7 @@ export function initTables(db: Database.Database) {
       author_id INTEGER NOT NULL,
       parent_id INTEGER,
       likes INTEGER DEFAULT 0,
+      attachments TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
@@ -161,6 +179,19 @@ export function initTables(db: Database.Database) {
     )
   `);
 
+  // 关注表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS follows (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      follower_id INTEGER NOT NULL,
+      following_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (following_id) REFERENCES users(id) ON DELETE CASCADE,
+      UNIQUE(follower_id, following_id)
+    )
+  `);
+
   // 创建索引以提高查询性能
   db.exec(`
     CREATE INDEX IF NOT EXISTS idx_post_likes_post_id ON post_likes(post_id);
@@ -174,6 +205,8 @@ export function initTables(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at);
     CREATE INDEX IF NOT EXISTS idx_posts_views ON posts(views);
     CREATE INDEX IF NOT EXISTS idx_posts_likes ON posts(likes);
+    CREATE INDEX IF NOT EXISTS idx_follows_follower_id ON follows(follower_id);
+    CREATE INDEX IF NOT EXISTS idx_follows_following_id ON follows(following_id);
   `);
 
   // 插入默认分类

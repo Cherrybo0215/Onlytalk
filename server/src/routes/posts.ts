@@ -153,16 +153,22 @@ router.post(
     }
 
     try {
-      const { title, content, category_id } = req.body;
+      const { title, content, category_id, attachments } = req.body;
 
       const result = db
-        .prepare('INSERT INTO posts (title, content, author_id, category_id) VALUES (?, ?, ?, ?)')
-        .run(title, content, req.userId, category_id || null);
+        .prepare('INSERT INTO posts (title, content, author_id, category_id, attachments) VALUES (?, ?, ?, ?, ?)')
+        .run(title, content, req.userId, category_id || null, attachments || null);
 
       const postId = result.lastInsertRowid as number;
 
       // 发帖奖励积分
       db.prepare('UPDATE users SET points = points + 5 WHERE id = ?').run(req.userId);
+      
+      // 更新用户等级
+      const user = db.prepare('SELECT points FROM users WHERE id = ?').get(req.userId) as any;
+      const newLevel = Math.floor(user.points / 30) + 1;
+      db.prepare('UPDATE users SET level = ? WHERE id = ?').run(newLevel, req.userId);
+      
       const post = db
         .prepare(
           `
